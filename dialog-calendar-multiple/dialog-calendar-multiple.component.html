@@ -1,0 +1,115 @@
+<div class="content">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+    <div class="content-container">
+        <mat-icon id="close-icon"><img [src]="close" (click)="closeDialog()"></mat-icon>
+    </div>
+    <div class="span"><span class="text-center">Save The Date</span></div>
+    
+    <div class="bord">
+        <mat-form-field appearance="legacy">
+            <mat-label >Choose The Menu:</mat-label>
+            <mat-select [(ngModel)]="optionValue">
+                <mat-option (click)="toogleEvent()" value="Tambah event baru">Add new event</mat-option>
+                <mat-option (click)="toogleEmail()" value="Hantar wish">Send a wishes</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <!-- INPUT FORM EVENT -->
+    <form [formGroup]="eventForm" (ngSubmit)="saveButton(eventForm.value)">
+        <div *ngIf="optionValue == 'Tambah event baru'; else toMail" class="formInput">
+            <mat-form-field appearance="legacy">
+                <mat-label>Add event</mat-label>
+                <input matInput formControlName="eventName" required>
+
+                <mat-hint style="color: red;" *ngIf="eventForm.get('eventName').touched && eventForm.get('eventName').errors?.required">
+                    please insert event
+                </mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="legacy">
+                <mat-label>Event date</mat-label>
+                    <mat-date-range-input [rangePicker]="picker" >
+                    <input matStartDate placeholder="Start date" formControlName="dateStart" name="date" (dateChange)="getDateStart()" required>
+                    <input matEndDate placeholder="End date" formControlName="endDate" name="date" (dateChange)="getDateEnd()" required>
+                    </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+        
+            <table class="time-full-width" cellspacing="0"><tr>
+                <td><mat-form-field appearance="legacy">
+                    <mat-label>Start time</mat-label>
+                    <mat-select formControlName="startTime" required>
+                        <mat-option *ngFor="let varTimeStart of timeStartObj" [value]="varTimeStart">
+                            {{varTimeStart.viewValueStart}}
+                        </mat-option>
+                    </mat-select>
+
+                    <mat-hint style="color: red;" *ngIf="eventForm.get('startTime').touched && eventForm.get('startTime').errors?.required">
+                        please insert start time 
+                    </mat-hint>
+                </mat-form-field></td>
+
+                <td><mat-form-field appearance="legacy">
+                    <mat-label>End time</mat-label>
+                    <mat-select formControlName="endTime" required >
+                        <mat-option *ngFor="let varTimeEnd of timeEndObj" [value]="varTimeEnd" >
+                            {{varTimeEnd.viewValueEnd}}
+                        </mat-option>
+                    </mat-select>       
+                    
+                    <mat-hint style="color: red;" *ngIf="eventForm.get('endTime').touched && eventForm.get('endTime').errors?.required">
+                        please insert end time 
+                    </mat-hint>
+                </mat-form-field></td>
+            </tr></table>
+
+            <mat-form-field appearance="legacy">
+                <mat-label>Category</mat-label>
+                <mat-select formControlName="kategori" required>
+                <mat-option *ngFor="let categoriEvent of categoryObj" [value]="categoriEvent">
+                    {{categoriEvent.viewValue}}
+                </mat-option>
+                </mat-select>
+
+                <mat-hint style="color: red;" *ngIf="eventForm.get('dateStart').touched && eventForm.get('dateStart').errors?.required">
+                    please choose category
+                </mat-hint>
+            </mat-form-field><br><br>
+
+            <div class="d-grid gap-1 d-md-flex justify-content-md-end"> 
+                <a mat-raised-button (click)="closeDialog()" target="_blank">Cancel</a>                            
+                <button mat-raised-button color="primary" [disabled]="eventForm.invalid" type="submit" class="submit-btn" id="yes-button" [mat-dialog-close]="true" >Save</button> &nbsp; 
+            </div>   
+        </div>
+    </form>
+    
+    <!-- FORM SEND MAIL -->
+    <ng-template #toMail>
+        <form [formGroup]="eventForm" >
+            <div *ngIf="optionValue == 'Hantar wish'">
+                    <mat-form-field appearance="legacy">
+                        <input matInput disabled value="To:">
+                    </mat-form-field>
+
+                <mat-form-field appearance="legacy">
+                    <mat-label>Subject:</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                
+                <mat-form-field appearance="legacy" >
+                    <input matInput disabled value="From: engkaujodohku.co@gmail.com">
+                </mat-form-field>
+    
+                <quill-editor [styles]="{minHeight: '130px'}"></quill-editor><br><br>
+    
+                <div class="d-grid gap-1 d-md-flex justify-content-md-end"> 
+                    <a mat-raised-button (click)="closeDialog()" target="_blank">Cancel</a>                            
+                    <button mat-raised-button color="primary" type="submit" class="submit-btn">Send</button> &nbsp; 
+                </div>   
+            </div>
+        </form>    
+    </ng-template>
+    <br>   
+</div>
